@@ -1,5 +1,5 @@
 name: Build React Native Android App
- 
+
 on:
   push:
     branches:
@@ -14,8 +14,8 @@ jobs:
     runs-on: self-hosted
 
     env:
-      ORG_GRADLE_JVMARGS: -Xmx4g  # ✅ Increase heap size for Gradle
- #test-2
+      ORG_GRADLE_JVMARGS: -Xmx6g  # Increased heap size for Gradle
+
     steps:
     # Step 1: Checkout the code
     - name: Checkout code
@@ -32,7 +32,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18' # Ensure compatibility with your package.json
+        node-version: '18'  # Ensure compatibility with your package.json
 
     # Step 4: Install Yarn
     - name: Install Yarn
@@ -55,15 +55,29 @@ jobs:
       run: chmod +x gradlew
       working-directory: android
 
-    # Step 7.1: Build the Android APK
+    # Step 8: Build the Android APK with debug logs
     - name: Build APK
-      run: ./gradlew assembleRelease
+      run: ./gradlew assembleRelease --info --stacktrace
       working-directory: android
 
-    # Step 8: Archive the APK
+    # Step 9: Verify APK Output
+    - name: Verify APK Output
+      run: ls -la android/app/build/outputs/apk/release
+      working-directory: android
+
+    # Step 10: Archive the APK
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release.apk
         path: android/app/build/outputs/apk/release/app-release.apk
-        retention-days: 1  # ♻️ Auto-delete after 1 day
+        retention-days: 1  # Auto-delete after 1 day
+
+    # Optional: Cache Gradle dependencies for faster builds
+    - name: Cache Gradle
+      uses: actions/cache@v3
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
