@@ -1,5 +1,4 @@
 name: Build React Native Android App
-
 on:
   push:
     branches:
@@ -7,41 +6,41 @@ on:
   pull_request:
     branches:
       - master
-
+ 
 jobs:
   build:
     name: Build Android APK
     runs-on: self-hosted
-
+ 
     env:
-      ORG_GRADLE_JVMARGS: -Xmx6g  # Increased heap size for Gradle
-
+      ORG_GRADLE_JVMARGS: -Xmx4g  # ✅ Increase heap size for Gradle
+#test
     steps:
     # Step 1: Checkout the code
     - name: Checkout code
       uses: actions/checkout@v3
-
+ 
     # Step 2: Setup Java environment
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
         java-version: '17'  # Use the version compatible with your Android Gradle plugin
-
+ 
     # Step 3: Install Node.js
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'  # Ensure compatibility with your package.json
-
+        node-version: '18' # Ensure compatibility with your package.json
+ 
     # Step 4: Install Yarn
     - name: Install Yarn
       run: npm install -g yarn
-
+ 
     # Step 5: Install project dependencies
     - name: Install dependencies
       run: yarn install
-
+ 
     # Step 6: Set up Android environment
     - name: Set up Android SDK
       uses: android-actions/setup-android@v2
@@ -49,35 +48,21 @@ jobs:
         api-level: 33  # Adjust based on your app's requirements
         build-tools: 33.0.2
         cache: true
-
+ 
     # Step 7: Grant execute permissions to gradlew
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       working-directory: android
-
-    # Step 8: Build the Android APK with debug logs
+ 
+    # Step 7.1: Build the Android APK
     - name: Build APK
-      run: ./gradlew assembleRelease --info --stacktrace
+      run: ./gradlew assembleRelease
       working-directory: android
-
-    # Step 9: Verify APK Output
-    - name: Verify APK Output
-      run: ls -la android/app/build/outputs/apk/release
-      working-directory: android
-
-    # Step 10: Archive the APK
+ 
+    # Step 8: Archive the APK
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: app-release.apk
         path: android/app/build/outputs/apk/release/app-release.apk
-        retention-days: 1  # Auto-delete after 1 day
-
-    # Optional: Cache Gradle dependencies for faster builds
-    - name: Cache Gradle
-      uses: actions/cache@v3
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+        retention-days: 1  # ♻️ Auto-delete after 1 day
