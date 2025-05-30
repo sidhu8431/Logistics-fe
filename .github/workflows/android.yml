@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Build Android APK
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       ORG_GRADLE_JVMARGS: -Xmx4g  # ✅ Increase heap size for Gradle
