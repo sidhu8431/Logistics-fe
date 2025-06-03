@@ -65,11 +65,11 @@ jobs:
       run: |
         DATE_TAG=$(date +%Y%m%d-%H%M%S)
         FILE_NAME="app-release-$DATE_TAG-${GITHUB_SHA::7}.apk"
-        S3_URI="s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH/$FILE_NAME"
-        PUBLIC_URL="https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/$S3_BUCKET_PATH/$FILE_NAME"
+        S3_URI="s3://${{ secrets.S3_BUCKET_NAME }}/${{ secrets.S3_BUCKET_PATH }}/$FILE_NAME"
+        PUBLIC_URL="https://${{ secrets.S3_BUCKET_NAME }}.s3.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.S3_BUCKET_PATH }}/$FILE_NAME"
 
         aws s3 cp android/app/build/outputs/apk/release/app-release.apk "$S3_URI" \
-            --region "$AWS_REGION" --acl public-read
+            --region "${{ secrets.AWS_REGION }}"
 
         echo "✅ APK uploaded: $PUBLIC_URL"
         echo "::notice title=Download APK::$PUBLIC_URL"
