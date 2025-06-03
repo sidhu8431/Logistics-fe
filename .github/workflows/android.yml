@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build Android APK
+    name: Build Android APkk
     runs-on: self-hosted
 
     env:
