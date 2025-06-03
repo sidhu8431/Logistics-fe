@@ -23,7 +23,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '21'
-# test-1
+# test-2
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -87,8 +87,3 @@ jobs:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
           S3_BUCKET_PATH: ${{ secrets.S3_BUCKET_PATH }}
 
-      - name: Debug Environment Variables
-        run: |
-          echo "AWS_REGION: $AWS_REGION"
-          echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
-          echo "S3_BUCKET_PATH: $S3_BUCKET_PATH"
