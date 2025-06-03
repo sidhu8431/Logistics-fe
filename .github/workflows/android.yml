@@ -17,16 +17,16 @@ jobs:
       ORG_GRADLE_JVMARGS: -Xmx4g  # ✅ Increase heap size for Gradle
 
     steps:
-    # Step 1: Checkout the code
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    # Step 2: Install OpenJDK 21
-    - name: Install OpenJDK 21
+    # Step 1: Install missing dependencies (e.g., unzip, OpenJDK)
+    - name: Install Dependencies
       run: |
         sudo apt update
-        sudo apt install -y openjdk-21-jdk
+        sudo apt install -y unzip openjdk-21-jdk
         java -version
+
+    # Step 2: Checkout the code
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     # Step 3: Install Node.js
     - name: Set up Node.js
@@ -55,12 +55,12 @@ jobs:
       run: chmod +x gradlew
       working-directory: android
 
-    # Step 7.1: Build the Android APK
+    # Step 8: Build the Android APK
     - name: Build APK
       run: ./gradlew assembleRelease
       working-directory: android
 
-    # Step 8: Upload the APK
+    # Step 9: Upload the APK to S3
     - name: Upload APK to S3 with unique name
       run: |
         DATE_TAG=$(date +%Y%m%d-%H%M%S)
