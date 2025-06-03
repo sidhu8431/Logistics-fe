@@ -1,5 +1,5 @@
 name: Build React Native Android App
- 
+
 on:
   push:
     branches:
@@ -15,18 +15,18 @@ jobs:
 
     env:
       ORG_GRADLE_JVMARGS: -Xmx4g  # ✅ Increase heap size for Gradle
- 
+
     steps:
     # Step 1: Checkout the code
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Setup Java environment
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: '17'  # Use the version compatible with your Android Gradle plugin
+    # Step 2: Install OpenJDK 21
+    - name: Install OpenJDK 21
+      run: |
+        sudo apt update
+        sudo apt install -y openjdk-21-jdk
+        java -version
 
     # Step 3: Install Node.js
     - name: Set up Node.js
@@ -60,7 +60,7 @@ jobs:
       run: ./gradlew assembleRelease
       working-directory: android
 
-    # Step 8: upload the APK
+    # Step 8: Upload the APK
     - name: Upload APK to S3 with unique name
       run: |
         DATE_TAG=$(date +%Y%m%d-%H%M%S)
@@ -79,7 +79,3 @@ jobs:
         AWS_REGION: ${{ secrets.AWS_REGION }}
         S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         S3_BUCKET_PATH: ${{ secrets.S3_BUCKET_PATH }}
-
-
-
-#hello
