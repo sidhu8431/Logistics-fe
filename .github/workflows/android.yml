@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [master]
 
-    
 jobs:
   build:
     name: Build Android APK
@@ -76,8 +75,8 @@ jobs:
           S3_URI="s3://$S3_BUCKET_NAME/$S3_BUCKET_PATH/$FILE_NAME"
           PUBLIC_URL="https://${S3_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/$S3_BUCKET_PATH/$FILE_NAME"
 
-          aws s3 cp android/app/build/outputs/apk/release/app-release.apk "$S3_URI" \
-            --region "$AWS_REGION" --acl public-read
+          # Upload the APK file without ACL
+          aws s3 cp android/app/build/outputs/apk/release/app-release.apk "$S3_URI" --region "$AWS_REGION"
 
           echo "✅ APK uploaded: $PUBLIC_URL"
           echo "::notice title=Download APK::$PUBLIC_URL"
